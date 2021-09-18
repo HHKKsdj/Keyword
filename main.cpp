@@ -9,51 +9,61 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include <regex>
 
 using namespace::std;
 
 string keyword[] = {"auto","break","case","char","const","continue","default","do","double","else","enum","extern","float","for","goto","if","int","long","register","return","short","signed","sizeof","static","struct","switch","typedef","union","unsigned","void","volatile","while"};
+vector<string> content;
 
-int findKeyword(string line){
-    int num = 0;
-    for (int i=0; i<32; i++) {
-
-        size_t fi = line.find(keyword[i], 0);
-        while (fi!=line.npos && keyword[i] != "do")
-        {
-            num++;
-            fi = line.find(keyword[i], fi + 1);
-        }
-    }
-    return num;
-}
-
-int main(int argc, const char * argv[]) {
-    int level = 0,keyNum = 0;
-    string p,text;
-    vector<string> content;
+void read (string path) {
     ifstream fp;
+    string text;
     
-    cin>>p>>level;
-    
-    fp.open(p,ios::in);
+    fp.open(path,ios::in);
     if (!fp.is_open()) {
         cout<<"Error!"<<endl;
-        return 1;
+        return;
     }
     
     while (getline(fp, text)) {
         content.push_back(text);
     }
     fp.close();
-    
-    for (int i = 0; i<=content.size(); i++) {
-        string line = content[i];
-//        cout<<line<<endl;
-//        cout<<findKeyword(line)<<endl;
-        keyNum += findKeyword(line);
-    }
-    cout<<"total num: "<<keyNum<<endl;
+}
 
+void findKeyword(){
+    int num = 0;
+    string line;
+    for (int i = 0; i<=content.size(); i++) {
+        line = content[i];
+        for (int j=0; j<32; j++) {
+            size_t fi = line.find(keyword[j], 0);
+            while (fi!=line.npos && keyword[j] != "do")
+            {
+                num++;
+                fi = line.find(keyword[j], fi + 1);
+            }
+        }
+    }
+    cout<<"total num: "<<num<<endl;
+}
+
+void findSwitchCase () {
+//    int num = 0;
+    
+}
+
+int main(int argc, const char * argv[]) {
+    int level = 0;
+    string path,text;
+    
+    cin>>path>>level;
+    
+    read(path);
+    
+    findKeyword();
+    findSwitchCase();
+    
     return 0;
 }
