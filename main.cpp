@@ -32,10 +32,10 @@ void read (string path) {
     fp.close();
 }
 
-void findKeyword(){
+void findKeyword () {
     int num = 0;
     string line;
-    for (int i = 0; i<=content.size(); i++) {
+    for (int i = 0; i<content.size(); i++) {
         line = content[i];
         for (int j=0; j<32; j++) {
             size_t fi = line.find(keyword[j], 0);
@@ -50,7 +50,27 @@ void findKeyword(){
 }
 
 void findSwitchCase () {
-//    int num = 0;
+    int snum = 0,f = -1,cnum[1000]={0};
+    string line;
+    for (int i = 0; i<content.size(); i++) {
+        line = content[i];
+        if (line.find("switch") != line.npos) {
+            snum += 1;
+            f += 1;
+        }
+        if (line.find("case") != line.npos) {
+            cnum[f] += 1;
+        }
+    }
+    cout<<"switch num: "<<snum<<endl;
+    cout<<"case num:";
+    for (int i = 0; i<=f; i++) {
+        cout<<" "<<cnum[i];
+    }
+    cout<<endl;
+}
+
+void findIfElse () {
     
 }
 
