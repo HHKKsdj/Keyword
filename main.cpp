@@ -71,8 +71,28 @@ void findSwitchCase () {
 }
 
 void findIfElse () {
+    int sum1 = 0
+    stack<int> stack;
+    string line;
+    for (int i = 0; i<content.size(); i++) {
+        line = content[i];
+        if (line.find("if") != line.npos && line.find("else") == line.npos) { //if
+            stack.push(1);
+        } else if (line.find("if") == line.npos && line.find("else") != line.npos &&  stack.empty() == false) { //else
+            if (stack.top() == 1) {
+                sum1++;
+            }
+            stack.pop();
+            
+        }else  if (line.find("if") != line.npos && line.find("else") != line.npos) {  //if else
+            stack.push(2);
+        }
+    }
+    cout<<"if-else num: "<<sum1<<endl;
     
 }
+
+
 
 int main(int argc, const char * argv[]) {
     int level = 0;
@@ -84,6 +104,7 @@ int main(int argc, const char * argv[]) {
     
     findKeyword();
     findSwitchCase();
+    findIfElse();
     
     return 0;
 }
