@@ -71,7 +71,7 @@ void findSwitchCase () {
 }
 
 void findIfElse () {
-    int sum1 = 0
+    int sum1 = 0,sum2 = 0;
     stack<int> stack;
     string line;
     for (int i = 0; i<content.size(); i++) {
@@ -81,6 +81,8 @@ void findIfElse () {
         } else if (line.find("if") == line.npos && line.find("else") != line.npos &&  stack.empty() == false) { //else
             if (stack.top() == 1) {
                 sum1++;
+            } else {
+                sum2++;
             }
             stack.pop();
             
@@ -89,7 +91,7 @@ void findIfElse () {
         }
     }
     cout<<"if-else num: "<<sum1<<endl;
-    
+    cout<<"if-else-if num: "<<sum2<<endl;
 }
 
 
