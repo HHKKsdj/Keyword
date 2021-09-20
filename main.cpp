@@ -22,7 +22,6 @@ void exclude () {
     int i=0,f=0,r=0;
     for (i=0; i<content.size(); i++) {
         line = content[i];
-        
         if (line.find("\t") != line.npos && line.find("\t") == 0) {     /*删除行首制表符*/
             do {
                 k = line.find("\t")+1;
@@ -42,7 +41,8 @@ void exclude () {
             }
         } else if (line.find("\"") != line.npos) {      /*查找字符串*/
             size_t p[50] = {0};
-            
+            k = 0;
+            f = 0;
             while ((t=line.find("\"",k)) != line.npos) {        /*查找字符串“"”的位置*/
                 p[f] = t;
                 f++;
@@ -60,8 +60,13 @@ void exclude () {
             j = line.find("/*");
             k = line.find("*/");
             
-            if (k != line.npos) {
-                content[i] = line.substr(0,j);      /*如果注释语句只有一行，则删除注释语句*/
+            if (k != line.npos) {   /*如果注释语句在同一行内，则删除注释语句*/
+                if (j == 0) {
+                    content[i] = line.substr(k+2,line.length());
+                } else {
+                    content[i] = line.substr(0,j);
+                }
+                i--;
             } else {
                 content[i] = line.substr(0,j);
                 i += 1;
