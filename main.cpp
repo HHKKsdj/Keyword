@@ -17,12 +17,12 @@ string keyword[] = {"auto","break","case","char","const","continue","default","d
 vector<string> content;
 
 void exclude () {
-    string text,line,str[4]={"//","\"","/*","*/"};
+    string text,line;
     size_t j=0,k=0,t=0,p[50]={0};
     int i=0,f=0,r=0;
     for (i=0; i<content.size(); i++) {
         line = content[i];
-        if (line.find(str[0]) != line.npos) {
+        if (line.find("//") != line.npos) {
             j = line.find("//");
             if (j==0) {
                 content.erase(content.begin()+i);
@@ -31,7 +31,7 @@ void exclude () {
                 text = line.substr(0,j);
                 content[i] = text;
             }
-        } else if (line.find(str[1]) != line.npos) {
+        } else if (line.find("\"") != line.npos) {
             while ((t=line.find("\"",k)) != line.npos) {
                 p[f] = t;
                 f++;
@@ -43,7 +43,7 @@ void exclude () {
                 text += line.substr(p[r]+1,p[r+1]-p[r]-1);
             }
             content[i] = text;
-        } else if (line.find(str[2]) != line.npos) {
+        } else if (line.find("/*") != line.npos) {
             j = line.find("/*");
             k = line.find("*/");
             
@@ -60,6 +60,32 @@ void exclude () {
                 k = line.find("*/")+2;
                 content[i] = line.substr(k,line.length()-k);
             }
+        }
+    }
+}
+
+bool subJudge (string l, long i) {
+    if (l[i] < 48 || (l[i] > 57 && l[i] < 65) || (l[i] > 90 && l[i] < 97) || l[i] >122) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+bool judge(string l, string s){
+    size_t i;
+    i=l.find(s);
+    if (i == 0) {
+        if (subJudge(l, s.length()) || s.length() == l.length()) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        if (subJudge(l, i-1) && (subJudge(l, i+s.length()) || i+s.length() == l.length())) {
+            return true;
+        } else {
+            return false;
         }
     }
 }
@@ -87,8 +113,7 @@ void findKeyword () {
         line = content[i];
         for (int j=0; j<32; j++) {
             size_t fi = line.find(keyword[j], 0);
-            while (fi!=line.npos && keyword[j] != "do")
-            {
+            while (fi!=line.npos && judge(line,keyword[j])) {
                 num++;
                 fi = line.find(keyword[j], fi + 1);
             }
@@ -124,7 +149,7 @@ void findIfElse (int level) {
     string line;
     for (int i = 0; i<content.size(); i++) {
         line = content[i];
-        if (line.find("if") != line.npos && line.find("else") == line.npos) { //if
+        if (line.find("if") != line.npos && line.find("else") == line.npos && judge(line,"if")) { //if
             stack.push(1);
         } else if (line.find("if") == line.npos && line.find("else") != line.npos &&  stack.empty() == false) { //else
             if (stack.top() == 1) {
@@ -134,7 +159,7 @@ void findIfElse (int level) {
             }
             stack.pop();
             
-        }else  if (line.find("if") != line.npos && line.find("else") != line.npos) {  //if else
+        }else  if (line.find("if") != line.npos && line.find("else") != line.npos && judge(line,"if")) {  //if else
             if (stack.top() != 2) {
                 stack.push(2);
             }
